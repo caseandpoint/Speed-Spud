@@ -9,7 +9,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.cs50.hotpotato.R;
+import com.cs50.hotpotato.ShowGame;
+
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -29,10 +33,10 @@ public class HotPotatoActivity extends Activity
 		setContentView(R.layout.main);
 
 		// get the button resource in the xml file and assign it to a local variable of type Button
-		Button launch = (Button)findViewById(R.id.login_button);
+		final Button login = (Button)findViewById(R.id.login_button);
 
 		// this is the action listener
-		launch.setOnClickListener( new OnClickListener()
+		login.setOnClickListener( new OnClickListener()
 		{
 
 			public void onClick(View viewParam)
@@ -44,136 +48,88 @@ public class HotPotatoActivity extends Activity
 				// the getText() gets the current value of the text box
 				// the toString() converts the value to String data type
 				// then assigns it to a variable of type String
-				String sUserName = usernameEditText.getText().toString();
-				String sPassword = passwordEditText.getText().toString();
+				final String sUserName = usernameEditText.getText().toString();
 
 				// this just catches the error if the program cant locate the GUI stuff
-				if(usernameEditText == null || passwordEditText == null)
+				if(usernameEditText == null || passwordEditText == null || !checkUser(sUserName))
 				{
-					Toast.makeText(HotPotatoActivity.this, "Couldn't find the 'txt_username' or 'txt_password'", 
+					Toast.makeText(HotPotatoActivity.this, "Couldn't find the username", 
 							Toast.LENGTH_SHORT).show();
 				}
 				else
 				{
-					// display the username and the password in string format
-					Toast.makeText(HotPotatoActivity.this, "Logging in",
-							Toast.LENGTH_SHORT).show();
+					
+					login.setOnClickListener(new View.OnClickListener() 
+					{
+						public void onClick(View arg0) 
+						{
+							Intent nextScreen = new Intent(getApplicationContext(), ShowGame.class);
+							
+							//Sending data to another Activity
+							nextScreen.putExtra("name", sUserName);
+
+							// starting new activity
+							startActivity(nextScreen);
+
+						}
+					}); 
+
 				}
 			}
+		});
+	}
 
-/*			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-
-			} */
+	private boolean checkUser(String username)
+	{
+		Document doc = null;
+		try 
+		{
+			doc = Jsoup.connect("http://speedspud.com/android/userInfo.php/").get();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
-				); // end of launch.setOnclickListener
+		Elements rows = doc.select("p");
+
+		for (Element oneRow : rows)
+		{
+			String temp = oneRow.toString();
+
+			// get starting location of username
+			int startName = temp.indexOf("username") + 21;		
+
+			// get ending location of username
+			String tempUser = temp.substring(startName);
+			int endName = tempUser.indexOf("&quot");
+
+			String oneUser = tempUser.substring(0, endName);
+
+			/*
+			// get starting location of password
+			int startPassword = temp.indexOf("passwordHash") + 25;
+
+			// get ending location of password
+			String tempPass = temp.substring(startPassword);
+			int endPassword = tempPass.indexOf("&quot");
+
+			String oneHash = tempPass.substring(0, endPassword);
+			 */
+
+			// check if username exists, log in if it does
+			if (oneUser.equals(username))
+			{	
+/*				TextView tv = new TextView(this);
+				tv.setText("Welcome " + oneUser);
+				setContentView(tv); 
+
+*/				//	Toast.makeText(HotPotatoActivity.this, "Welcome" + oneUser,
+				//			Toast.LENGTH_SHORT).show();
+
+				return true;
+			}
+		}
+
+		return false;
 	}
-
-
-	/*
-        String username;
-        String password;
-
-        String hash = getHash(password);
-        checkPassword(username, hash);
-
-        TextView tv = new TextView(this);
-
-        Button testButton = (Button) findViewById(R.id.button);
-
-
-        button.setOnClickListener(new OnClickListener() 
-        	{
-            public void onClick(View v) 
-            {
-                // Perform action on clicks
-    			tv.setText("please work");
-    			setContentView(tv);
-            }
-        });
-
-       myButton.setOnClickListener(new Button_Clicker());*/
-
-/*
-   class Button_Clicker implements Button.OnClickListener
-   {
-   @Override
-       public void onClick(View v) {
-
-              if(v==myButton)
-          {
-                   Toast.makeText(v.getContext(), "Hello!! button Clicked", Toast.LENGTH_SHORT).show();
-
-          }    
-   }
-   }*/
-
-
-private String getHash(String password)
-{
-	String hash = "";
-
-	Document doc = null;
-	try
-	{
-		doc = Jsoup.connect("http://speedspud.com/android/hash.php").get();
-	}
-	catch (IOException e)
-	{
-		e.printStackTrace();
-	}
-
-	Element hashLine = doc.getElementById("hash");
-	hash = hashLine.toString();
-
-	return hash;
-}
-
-private boolean checkPassword(String username, String hash)
-{
-	Document doc = null;
-	try 
-	{
-		doc = Jsoup.connect("http://speedspud.com/android/userInfo.php/").get();
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-
-	Elements rows = doc.select("p");
-	List<String> userInfo = new ArrayList<String>();
-
-	// pdfList.add(packagename.text());
-
-	for (Element oneRow : rows)
-	{
-		String temp = oneRow.toString();
-
-		// get starting location of username
-		int startName = temp.indexOf("username") + 21;		
-
-		// get ending location of username
-		String tempUser = temp.substring(startName);
-		int endName = tempUser.indexOf("&quot");
-
-		String oneUser = tempUser.substring(0, endName);
-
-		// get starting location of password
-		int startPassword = temp.indexOf("passwordHash") + 25;
-
-		// get ending location of password
-		String tempPass = temp.substring(startPassword);
-		int endPassword = tempPass.indexOf("&quot");
-
-		String oneHash = tempPass.substring(0, endPassword);
-
-		TextView tv = new TextView(this);
-		tv.setText(oneUser + oneHash);
-		setContentView(tv);
-	}
-
-	return false;
-}
 }
