@@ -4,9 +4,9 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="lib" path="/Applications/eclipse/plugins/jsoup-1.6.1.jar" sourcepath="/Applications/eclipse/plugins/jsoup-1.6.1-sources.jar">
+	<classpathentry kind="lib" path="/Volumes/You Suck/Extra Applications/Eclipse/plugins/jsoup-1.6.1.jar" sourcepath="/Volumes/You Suck/Extra Applications/Eclipse/plugins/jsoup-1.6.1-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Applications/eclipse/plugins/jsoup-1.6.1-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:file:/Volumes/You Suck/Extra Applications/Eclipse/plugins/jsoup-1.6.1-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="bin/classes"/>
