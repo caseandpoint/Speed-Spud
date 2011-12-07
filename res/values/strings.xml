@@ -3,5 +3,8 @@
 
     <string name="hello">Hello World, HotPotatoActivity!</string>
     <string name="app_name">Hot Potato</string>
+    
+    <string name="live_folder_name">Test Page</string>
+    
 
 </resources>
